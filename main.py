@@ -44,8 +44,7 @@ async def login(user: User):
 
 @app.get("/users/", status_code=200)
 async def get_users(db: Session = Depends(get_db)):
-    users = db.query(models.User)
-    return users
+    return db.query(models.User).all()
 
 @app.post("/registrar/", status_code=201)
 async def create_user(user: User, db: Session = Depends(get_db)):
@@ -54,6 +53,10 @@ async def create_user(user: User, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return User(name=db_user.name, id=db_user.id, password=db_user.password, rol=db_user.rol, creado=db_user.creado)
+
+@app.get("/products/")
+async def get_all_products(db: Session = Depends(get_db)):
+    return db.query(models.Producto).all()
 
 @app.get("/products/{user_id}", status_code=200)
 async def get_products_user(user_id: int, db: Session = Depends(get_db)):
